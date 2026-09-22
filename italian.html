@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Italian 5-Minute Language Tester</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f5ff;color:#121a38;border-top:10px solid #31c37c}
+main{max-width:1200px;margin:auto;padding:34px 46px}.title{font-size:36px;font-weight:900;margin:0}.sub{font-size:20px;color:#66708e;margin:12px 0 28px}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:58px}.lang{font-size:34px;font-weight:900;color:#31c37c;margin:0 0 14px}
+.phrase{display:grid;grid-template-columns:1fr 1fr 58px;align-items:center;background:#fff;border-radius:10px;margin:12px 0;padding:10px 14px 10px 24px;box-shadow:0 3px 5px #0002;font-size:21px;min-height:58px}
+.phrase b{font-size:22px}.meaning{color:#69738f}.speak{width:44px;height:44px;border:0;border-radius:50%;background:#31c37c;color:white;font-size:22px;cursor:pointer}.speak:hover{transform:scale(1.06)}.speak:focus{outline:3px solid #172040;outline-offset:2px}
+.card{background:#e5fff0;border-radius:48px;padding:34px 42px;box-shadow:0 3px 4px #0002;min-height:360px}.card h2{color:#31c37c;font-size:27px;margin:0 0 50px}
+.intro{font-size:29px;font-weight:800;line-height:1.2}.tip{font-size:20px;margin-top:55px}.status{font-size:14px;color:#68728e;margin-top:16px}
+@media(max-width:760px){main{padding:25px 18px}.title{font-size:28px}.grid{grid-template-columns:1fr;gap:28px}.phrase{grid-template-columns:1fr 50px}.meaning{grid-column:1}.card{border-radius:30px}.card h2{margin-bottom:30px}}
+</style></head>
+<body><main>
+<h1 class="title">MISSION 4 — 5-MINUTE LANGUAGE TESTER</h1>
+<p class="sub">Can you crack a tiny new language system?</p>
+<div class="grid"><section>
+<h2 class="lang">ITALIAN 🇮🇹</h2>
+<div class="phrase"><b>Ciao</b><span class="meaning">Hello / bye</span><button class="speak" data-text="Ciao" aria-label="Hear Ciao">🔊</button></div>
+<div class="phrase"><b>Mi chiamo…</b><span class="meaning">My name is…</span><button class="speak" data-text="Mi chiamo" aria-label="Hear Mi chiamo">🔊</button></div>
+<div class="phrase"><b>Mi piace…</b><span class="meaning">I like…</span><button class="speak" data-text="Mi piace" aria-label="Hear Mi piace">🔊</button></div>
+<div class="phrase"><b>Non mi piace…</b><span class="meaning">I don't like…</span><button class="speak" data-text="Non mi piace" aria-label="Hear Non mi piace">🔊</button></div>
+<div class="phrase"><b>Grazie</b><span class="meaning">Thank you</span><button class="speak" data-text="Grazie" aria-label="Hear Grazie">🔊</button></div>
+<p class="status" id="status">Click 🔊 to hear each phrase in Italian.</p>
+</section>
+<section class="card"><h2>YOUR 3-LINE INTRO</h2>
+<div class="intro">Ciao!<br>Mi chiamo __________.<br>Mi piace __________.</div>
+<p class="tip">Say it aloud twice.<br>Then try it without looking.</p>
+</section></div>
+</main>
+<script>
+const status=document.getElementById('status');
+document.querySelectorAll('.speak').forEach(btn=>btn.addEventListener('click',()=>{
+ if(!('speechSynthesis' in window)){status.textContent='Speech is not supported in this browser.';return;}
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(btn.dataset.text);
+ u.lang='it-IT'; u.rate=.78; u.pitch=1;
+ const voices=speechSynthesis.getVoices();
+ const italian=voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('it'));
+ if(italian)u.voice=italian;
+ u.onstart=()=>status.textContent='🔊 Playing: '+btn.dataset.text;
+ u.onend=()=>status.textContent='Click 🔊 to hear another phrase.';
+ speechSynthesis.speak(u);
+}));
+</script></body></html>
