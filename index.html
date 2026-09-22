@@ -15,22 +15,43 @@ main{max-width:1200px;margin:auto;padding:34px 46px}.title{font-size:36px;font-w
 </style></head><body><main>
 <h1 class="title">MISSION 4 — 5-MINUTE LANGUAGE TESTER</h1><p class="sub">Can you crack a tiny new language system?</p>
 <div class="grid"><section><h2 class="lang">ITALIAN 🇮🇹</h2>
-<div class="phrase"><b>Ciao</b><span class="meaning">Hello / bye</span><button class="speak" data-src="ciao.mp3" aria-label="Play Ciao">🔊</button></div>
-<div class="phrase"><b>Mi chiamo…</b><span class="meaning">My name is…</span><button class="speak" data-src="mi-chiamo.mp3" aria-label="Play Mi chiamo">🔊</button></div>
-<div class="phrase"><b>Mi piace…</b><span class="meaning">I like…</span><button class="speak" data-src="mi-piace.mp3" aria-label="Play Mi piace">🔊</button></div>
+<div class="phrase"><b>Ciao</b><span class="meaning">Hello / bye</span><button class="speak" onclick="playSound(\'ciao.mp3\', this)" aria-label="Play Ciao">🔊</button></div>
+<div class="phrase"><b>Mi chiamo…</b><span class="meaning">My name is…</span><button class="speak" onclick="playSound(\'mi-chiamo.mp3\', this)" aria-label="Play Mi chiamo">🔊</button></div>
+<div class="phrase"><b>Mi piace…</b><span class="meaning">I like…</span><button class="speak" onclick="playSound(\'mi-piace.mp3\', this)" aria-label="Play Mi piace">🔊</button></div>
 
-<div class="phrase"><b>Grazie</b><span class="meaning">Thank you</span><button class="speak" data-src="grazie.mp3" aria-label="Play Grazie">🔊</button></div>
+<div class="phrase"><b>Grazie</b><span class="meaning">Thank you</span><button class="speak" onclick="playSound(\'grazie.mp3\', this)" aria-label="Play Grazie">🔊</button></div>
 <p class="status" id="status">Click 🔊 to hear the Italian pronunciation.</p></section>
 <section class="card"><h2>YOUR 3-LINE INTRO</h2><div class="intro">Ciao!<br>Mi chiamo __________.<br>Mi piace __________.</div>
 <p class="tip">Say it aloud twice.<br>Then try it without looking.</p></section></div></main>
-<audio id="player" preload="none"></audio>
+
 <script>
-const player=document.getElementById("player"),status=document.getElementById("status");let current=null;
-document.querySelectorAll(".speak").forEach(btn=>btn.addEventListener("click",()=>{
- if(current)current.classList.remove("playing"); current=btn;btn.classList.add("playing");
- player.src=btn.dataset.src;player.currentTime=0;
- player.play().then(()=>status.textContent="🔊 Playing…").catch(()=>status.textContent="Audio file not found yet — check the audio folder and filenames.");
-}));
-player.addEventListener("ended",()=>{if(current)current.classList.remove("playing");status.textContent="Click 🔊 to hear another phrase.";});
-player.addEventListener("error",()=>{if(current)current.classList.remove("playing");status.textContent="Audio file not found — check the audio folder and filename.";});
+const status = document.getElementById("status");
+let currentButton = null;
+let currentAudio = null;
+
+function playSound(file, button) {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+  }
+  if (currentButton) currentButton.classList.remove("playing");
+
+  currentButton = button;
+  button.classList.add("playing");
+  status.textContent = "🔊 Playing…";
+
+  currentAudio = new Audio(encodeURI(file));
+  currentAudio.play()
+    .then(() => {})
+    .catch((err) => {
+      console.error(err);
+      button.classList.remove("playing");
+      status.textContent = "Audio could not play. Click the speaker again.";
+    });
+
+  currentAudio.addEventListener("ended", () => {
+    button.classList.remove("playing");
+    status.textContent = "Click 🔊 to hear the Italian pronunciation.";
+  });
+}
 </script></body></html>
